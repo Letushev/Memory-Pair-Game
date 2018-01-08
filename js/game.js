@@ -39,7 +39,7 @@ class Game {
 
   checkWin() {
     if(this.hiddenCouples === 8) {
-      setTimeout(() => { alert('You won!');
+      setTimeout(() => { alert('Congratulations!You won!');
                         location.reload();
       }, 500);
     }
