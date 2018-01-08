@@ -12,6 +12,7 @@ class Game {
                       ];
     this.container = document.querySelector('.game-area');
     this.openedCouple = [];
+    this.hiddenCouples = 0;
   }
    
   shuffle(array) {
@@ -36,52 +37,51 @@ class Game {
     this.addClickListeners(this.cards);
   }
 
-  removeCards(cards) {
-    cards[0].classList.add('hidden');
-    cards[1].classList.add('hidden');
+  checkWin() {
+    if(this.hiddenCouples === 8) {
+      setTimeout(() => { alert('You won!');
+                        location.reload();
+      }, 500);
+    }
+  }
+
+  removeCards() {
+    this.openedCouple[0].classList.add('hidden');
+    this.openedCouple[1].classList.add('hidden');
     this.openedCouple.length = 0;
+    this.hiddenCouples++;
+    this.checkWin();
   }
  
   checkOpenedCards() {
-    var checkedCards = document.querySelectorAll('.' + this.openedCouple[0]);
-    console.log(checkedCards);
-    if(this.openedCouple[0] === this.openedCouple[1]) {
-      setTimeout( () => { this.removeCards(checkedCards); }, 800);
-    }else {
-      this.closeCard(checkedCards[0].firstChild);
-      this.closeCard(checkedCards[1].firstChild);
+    if(this.openedCouple[0].className === this.openedCouple[1].className) {
+      setTimeout( () => { this.removeCards(); }, 100);
     }
   }
 
-  openCard(e) {
+  openCard(el) {
     if(this.openedCouple.length <= 2) {
+      var flipper = el.firstChild;
+      flipper.classList.add('opened');
+      this.openedCouple.push(el);
       if(this.openedCouple.length === 2) {
         this.checkOpenedCards();
       }
-      var target = e.target;
-      var parentNode = target.parentNode;
-      parentNode.classList.add('opened');
-      var type = parentNode.parentNode.className.split(' ')[1];
-      this.openedCouple.push(type);
+      if(this.openedCouple.length === 3) {
+        this.closeCard(this.openedCouple[0]);
+        this.closeCard(this.openedCouple[0]);
+      }
     }
   }
-
-  closeCard(el) {
-    var type = el.className.split(' ')[1];
-    el.classList.remove('opened');
-    this.openedCouple.pop();
-  }
   
-  closeCardEvent(e) {
-    var target = e.target;
-    var parentNode = target.parentNode;
-    var type = parentNode.parentNode.className.split(' ')[1];
-    parentNode.classList.remove('opened');
-    this.openedCouple.pop();
+  closeCard(el) {
+    var flipper = el.firstChild;
+    flipper.classList.remove('opened');
+    this.openedCouple.shift();
   }
 
-  isOpen(e) {
-    if(e.target.parentNode.className.includes('opened')) {
+  isOpen(el) {
+    if(el.firstChild.className.includes('opened')) {
       return true;
     }else {
       return false;
@@ -89,13 +89,15 @@ class Game {
   }
 
   addClickListeners(cards) {
-    var that = this;
+    var obj = this;
     for(var i = 0; i < cards.length; i++) {
-      cards[i].addEventListener('click', function(e) {
-        if(that.isOpen(e)) {
-          that.closeCardEvent(e);
+      cards[i].addEventListener('click', function(el) {
+        if(obj.isOpen(this)) {
+          if(obj.openedCouple.length === 1) {
+            tobj.closeCard(this);
+          }
         }else {
-          that.openCard(e);
+          obj.openCard(this);
         }
       }, false);
     }
@@ -104,4 +106,3 @@ class Game {
 
 const game = new Game();
 game.begin();
-
