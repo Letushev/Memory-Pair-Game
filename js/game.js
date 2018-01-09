@@ -39,7 +39,7 @@ class Game {
 
   checkWin() {
     if(this.hiddenCouples === 8) {
-      setTimeout(() => { alert('Congratulations!You won!');
+      setTimeout(() => { alert('Congratulations! You are the winner');
                         location.reload();
       }, 500);
     }
@@ -80,24 +80,12 @@ class Game {
     this.openedCouple.shift();
   }
 
-  isOpen(el) {
-    if(el.firstChild.className.includes('opened')) {
-      return true;
-    }else {
-      return false;
-    }
-  }
-
   addClickListeners(cards) {
-    var obj = this;
+    var thisObj = this;
     for(var i = 0; i < cards.length; i++) {
       cards[i].addEventListener('click', function(el) {
-        if(obj.isOpen(this)) {
-          if(obj.openedCouple.length === 1) {
-            tobj.closeCard(this);
-          }
-        }else {
-          obj.openCard(this);
+        if(!this.firstChild.className.includes('opened'))  {
+          thisObj.openCard(this);
         }
       }, false);
     }
