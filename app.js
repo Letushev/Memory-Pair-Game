@@ -1,4 +1,3 @@
-
 const gameAreaElement = document.querySelector('.game-area');
 const header = document.querySelector('header');
 
@@ -25,11 +24,28 @@ class Game {
     this.cardTypes = this.shuffleCardTypes(cardTypes);
   }
 
+  get openedCards() {
+    const cards = [];
+    const openedFlippers = document.querySelectorAll('flipper.opened');
+
+    openedFlippers.forEach(function saveOpenedCardType(flipper) {
+      cards.push(this.findCardType(flipper.closest('.card')));
+    });
+
+    return cards;
+  }
+
+  set cardOpened(flipper) {
+    flipper.classList.add('opened');
+  }
+
   start() {
     this.fillArea();
-    this.area.addEventListener('click', function() {
-
-    });
+    this.area.addEventListener('click', function(event) {
+      if (event.target.closest('.card')) {
+        this.handleCardClick(event.target.closest('.card'));
+      }
+    }.bind(this));
   }
 
   finish() {}
@@ -47,6 +63,19 @@ class Game {
     });
 
     this.area.innerHTML = area;
+  }
+
+  handleCardClick(card) {
+    const flipperElement = card.querySelector('.flipper');
+    const cardType = this.findCardType(card);
+
+    this.cardOpened = flipperElement;
+  }
+
+  findCardType(card) {
+    card.className.split(' ').find(function getType(name) {
+      return name !== 'card';
+    });
   }
 
   shuffleCardTypes(cardTypes) {
