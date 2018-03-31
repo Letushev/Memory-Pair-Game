@@ -1,4 +1,5 @@
 "use strict";
+
 class Game {
   constructor() {
     this.cardTypes = ["jabba",
@@ -14,7 +15,7 @@ class Game {
     this.openedCouple = [];
     this.hiddenCouples = 0;
   }
-   
+
   shuffle(array) {
     for(var j, x, i = array.length; i; j = parseInt(Math.random() * i),
         x = array[--i], array[i] = array[j], array[j] = x);
@@ -52,7 +53,7 @@ class Game {
     this.hiddenCouples++;
     this.checkWin();
   }
- 
+
   checkOpenedCards() {
     if(this.openedCouple[0].className === this.openedCouple[1].className) {
       setTimeout( () => { this.removeCards(); }, 100);
@@ -73,7 +74,7 @@ class Game {
       }
     }
   }
-  
+
   closeCard(el) {
     var flipper = el.firstChild;
     flipper.classList.remove('opened');

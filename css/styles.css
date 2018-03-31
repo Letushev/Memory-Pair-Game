@@ -51,7 +51,6 @@ header {
 .card {
   position: relative;
   perspective: 1000px;
-  transition: .8s;
 }
 
 .opened {
@@ -113,9 +112,10 @@ header {
   background: url('../images/yoda.png') no-repeat center center / cover, #fff;
 }
 
-.hidden  {
+.closed {
   visibility: hidden;
   opacity: 0;
+  transition: .8s;
 }
 
 @media screen and (max-width: 500px) {

@@ -18,29 +18,42 @@ function shuffleArray(array) {
 
 class Game {
 
-  constructor(player, areaElement, cardTypes) {
-    this.player = player;
+  constructor(areaElement, cardTypes) {
     this.area = areaElement;
-    this.cardTypes = this.shuffleCardTypes(cardTypes);
+    this.cardTypes = cardTypes;
   }
 
   get openedCards() {
-    const cards = [];
-    const openedFlippers = document.querySelectorAll('flipper.opened');
+    const cardTypes = [];
+    const openedFlippers = document.querySelectorAll('.opened');
 
     openedFlippers.forEach(function saveOpenedCardType(flipper) {
-      cards.push(this.findCardType(flipper.closest('.card')));
-    });
+      cardTypes.push(this.findCardType(flipper.closest('.card')));
+    }.bind(this));
 
-    return cards;
+    return { cardTypes, openedFlippers };
   }
 
-  set cardOpened(flipper) {
+  set opened(flipper) {
     flipper.classList.add('opened');
   }
 
-  start() {
-    this.fillArea();
+  set closed(flippers) {
+    flippers.forEach(function(flipper) {
+      setTimeout(function closeFlipper() {
+        flipper.classList.add('closed');
+      }, 100);
+    });
+  }
+
+  set hidden(flippers) {
+    flippers.forEach(function hideFlipper(flipper) {
+      flipper.classList.remove('opened');
+    })
+  }
+
+  start(levelParams) {
+    this.fillArea(levelParams);
     this.area.addEventListener('click', function(event) {
       if (event.target.closest('.card')) {
         this.handleCardClick(event.target.closest('.card'));
@@ -48,12 +61,14 @@ class Game {
     }.bind(this));
   }
 
-  finish() {}
+  finish() {
+  }
 
-  fillArea() {
+  fillArea(levelParams) {
     let area = '';
+    const cardTypes = this.shuffleCardTypes(this.cardTypes, levelParams)
 
-    this.cardTypes.forEach(function createCard(cardType) {
+    cardTypes.forEach(function createCard(cardType) {
       area += ` <div class="card ${ cardType }">
                   <div class="flipper">
                     <div class="front"></div>
@@ -69,17 +84,40 @@ class Game {
     const flipperElement = card.querySelector('.flipper');
     const cardType = this.findCardType(card);
 
-    this.cardOpened = flipperElement;
+    if (!flipperElement.classList.contains('closed') && !flipperElement.classList.contains('opened')) {
+
+      this.clicksRemain--;
+
+      if (clicksRemain === 0) {
+      }
+
+      if (this.openedCards.openedFlippers.length === 2) {
+        this.hidden = this.openedCards.openedFlippers;
+      }
+
+      this.opened = flipperElement;
+      this.checkCardsEquality();
+    }
   }
 
   findCardType(card) {
-    card.className.split(' ').find(function getType(name) {
+    return card.className.split(' ').find(function getType(name) {
       return name !== 'card';
     });
   }
 
-  shuffleCardTypes(cardTypes) {
-    const { numberOfCards, numberOfCardTypes } = this.player.levelParams;
+  checkCardsEquality() {
+    const { openedFlippers, cardTypes } = this.openedCards;
+
+    if (openedFlippers.length === 2)  {
+      if (cardTypes[0] === cardTypes[1]) {
+        this.closed = openedFlippers;
+      }
+    }
+  }
+
+  shuffleCardTypes(cardTypes, levelParams) {
+    const { numberOfCards, numberOfCardTypes } = levelParams;
     const randomTypes = shuffleArray(cardTypes).slice(0, numberOfCardTypes);
     let result = [];
 
@@ -95,10 +133,15 @@ class Game {
 
 class Player {
 
-  constructor(levelParams, container) {
-    this.hearts = 0;
+  constructor(container, game, levelParams) {
+    this.hearts = 1;
     this.level = 1;
     this.levelParams = levelParams;
+
+    this.game = game;
+    game.start(this.levelParams);
+
+    this.clicksRemain = this.levelParams.clicks;
 
     this.container = container;
   }
@@ -111,17 +154,30 @@ class Player {
 
   }
 
+  hasClicked() {
+    this.clicksRemain--;
+    this.update();
+
+    if (this.clicksRemain === 0) {
+      this.restart();
+    }
+  }
+
+  restart() {
+    if (this.hearts > 0) {
+      Game.restart();
+    }
+  }
+
   update() {
     this.container.innerHTML = `<span class="level">Level ${ this.level }</span>
                                 <img class="logo-img" src="images/logo.png">
-                                <span class="clicks">Clicks: ${ this.levelParams.clicks }</span> `;
+                                <span class="clicks">Clicks: ${ this.clicksRemain }</span> `;
   }
 
 }
 
+const game = new Game(gameAreaElement, CARD_TYPES);
 
-const player = new Player(LEVEL_0, header);
+const player = new Player(header, game, LEVEL_0);
 player.update();
-
-const game = new Game(player, gameAreaElement, CARD_TYPES);
-game.start();
