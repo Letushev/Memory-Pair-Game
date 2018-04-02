@@ -22,14 +22,6 @@ class Game {
     this.levelParams = levelParams;
   }
 
-  get openedCards() {
-    return document.querySelectorAll('.opened');
-  }
-
-  set open(card) {
-    card.classList.add('opened');
-  }
-
   start() {
     this.clicksRemain = this.levelParams.clicks;
 
@@ -69,6 +61,22 @@ class Game {
     this.container.appendChild(gameArea);
   }
 
+  get openedCards() {
+    return document.querySelectorAll('.opened');
+  }
+
+  open(card) {
+    card.classList.add('opened');
+  }
+
+  close(cards) {
+    setTimeout(function() {
+      cards.forEach(function(card) {
+        card.classList.add('closed');
+      });
+    }, 300);
+  }
+
   shuffleCardTypes() {
     const { numberOfCards, numberOfCardTypes } = this.levelParams;
     const randomTypes = shuffleArray(this.cardTypes).slice(0, numberOfCardTypes);
@@ -83,7 +91,39 @@ class Game {
 
   handleClick(event) {
     const card = event.target.closest('.card');
-    this.open = card;
+
+    if (!this.isCardOpen(card)) {
+      this.open(card);
+    }
+
+    if (this.openedCards.length === 2) {
+      this.compareOpenCards();
+    }
+
+    if (this.openedCards.length === 3) {
+      this.hideCards();
+    }
+  }
+
+  isCardOpen(card) {
+    for (const openCard of this.openedCards) {
+      if (card === openCard) {
+        return true;
+      }
+    }
+
+    return false;
+  }
+
+  compareOpenCards() {
+    if (this.openedCards[0].className === this.openedCards[1].className) {
+      this.close(this.openedCards);
+    }
+  }
+
+  hideCards() {
+    this.openedCards[0].classList.remove('opened');
+    this.openedCards[1].classList.remove('opened');
   }
 }
 
