@@ -13,29 +13,29 @@ body {
 
   color: #fff;
   font-family: monospace;
-  text-transform: uppercase;
   letter-spacing: 5px;
 
-	background: url(../images/stars-bg.jpg) no-repeat center center / cover;
+	background: url(../images/logo.png) no-repeat center 20px / 200px,
+              url(../images/stars-bg.jpg) no-repeat center center / cover;
 }
 
 header {
-  display: flex;
-  justify-content: space-around;
-  align-items: center;
-
-  padding: 20px;
-  margin-bottom: 10px;
+  padding: 20px 50px;
 }
 
 header p {
-  padding-bottom: 5px;
-  font-size: 1.5rem;
-  border-bottom: 2px solid #FFF;
+   font-size: 1.3rem;
+   margin: 5px 0;
 }
 
-.logo-img {
-  max-width: 200px;
+.hearts {
+  position: relative;
+}
+.hearts::after {
+  content: url('../images/heart.png');
+  position: absolute;
+  left: 30px;
+  top: 3px;
 }
 
 .game-area {
