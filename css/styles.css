@@ -28,7 +28,7 @@ header {
   margin-bottom: 10px;
 }
 
-.level, .clicks {
+header p {
   padding-bottom: 5px;
   font-size: 1.5rem;
   border-bottom: 2px solid #FFF;
