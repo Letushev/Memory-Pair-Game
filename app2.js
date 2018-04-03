@@ -66,6 +66,7 @@ class Game {
   }
 
   open(card) {
+    console.log('here');
     card.classList.add('opened');
   }
 
@@ -75,6 +76,12 @@ class Game {
         card.classList.add('closed');
       });
     }, 300);
+  }
+
+  hide(cards) {
+    cards.forEach(function(card) {
+      card.classList.remove('opened');
+    })
   }
 
   shuffleCardTypes() {
@@ -92,38 +99,27 @@ class Game {
   handleClick(event) {
     const card = event.target.closest('.card');
 
-    if (!this.isCardOpen(card)) {
+    if (card && !this.isCardOpened(card)) {
+      if (this.openedCards.length === 2) {
+        this.hide(this.openedCards);
+      }
+
       this.open(card);
     }
 
     if (this.openedCards.length === 2) {
       this.compareOpenCards();
     }
-
-    if (this.openedCards.length === 3) {
-      this.hideCards();
-    }
   }
 
-  isCardOpen(card) {
-    for (const openCard of this.openedCards) {
-      if (card === openCard) {
-        return true;
-      }
-    }
-
-    return false;
+  isCardOpened(card) {
+    return card.classList.contains('opened');
   }
 
   compareOpenCards() {
     if (this.openedCards[0].className === this.openedCards[1].className) {
       this.close(this.openedCards);
     }
-  }
-
-  hideCards() {
-    this.openedCards[0].classList.remove('opened');
-    this.openedCards[1].classList.remove('opened');
   }
 }
 
