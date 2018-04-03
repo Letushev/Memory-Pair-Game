@@ -1,12 +1,5 @@
-const gameAreaElement = document.querySelector('.game-area');
-const header = document.querySelector('header');
-
+const rootElement = document.getElementById('root');
 const CARD_TYPES = ["jabba", "obi", "c3po", "chewbacca", "leia", "luke", "vader", "yoda"];
-const LEVEL_0 = {
-  clicks: 32,
-  numberOfCards: 16,
-  numberOfCardTypes: 4
-}
 
 function shuffleArray(array) {
   for(var j, x, i = array.length; i; j = parseInt(Math.random() * i),
@@ -15,169 +8,225 @@ function shuffleArray(array) {
   return array;
 }
 
-
 class Game {
+  constructor(container, cardTypes, levelsParams) {
+    this.container = container;
 
-  constructor(areaElement, cardTypes) {
-    this.area = areaElement;
+    this.level = 1;
+    this.hearts = 0;
+
     this.cardTypes = cardTypes;
+    this.levelsParams = levelsParams;
+    this.numberOfCards = 16;
+
+    this.container.addEventListener('click', this.handleClick.bind(this));
+  }
+
+  start() {
+    this.clicksRemain = this.currentLevelParams.clicks;
+
+    this.container.innerHTML = '';
+    this.fillGameState();
+    this.fillGameArea();
+  }
+
+  fillGameState() {
+    const header = document.createElement('header');
+    header.innerHTML = `
+      <p><span class="level">${ this.level }</span> level</p>
+      <p class="hearts">${ this.hearts }</p>
+      <p><span class="clicks">${ this.clicksRemain }</span> clicks</p> `;
+
+    this.container.appendChild(header);
+  }
+
+  fillGameArea() {
+    const gameArea = document.createElement('div');
+    gameArea.className = 'game-area';
+
+    const cards = this.shuffleCardTypes();
+
+    cards.forEach(function addCard(cardType) {
+      gameArea.innerHTML += `
+          <div class="card ${ cardType }">
+            <div class="front"></div>
+            <div class="back"></div>
+          </div> `;
+    });
+
+    this.container.appendChild(gameArea);
   }
 
   get openedCards() {
-    const cardTypes = [];
-    const openedFlippers = document.querySelectorAll('.opened');
-
-    openedFlippers.forEach(function saveOpenedCardType(flipper) {
-      cardTypes.push(this.findCardType(flipper.closest('.card')));
-    }.bind(this));
-
-    return { cardTypes, openedFlippers };
+    return document.querySelectorAll('.opened');
   }
 
-  set opened(flipper) {
-    flipper.classList.add('opened');
+  get closedCards() {
+    return document.querySelectorAll('.closed');
   }
 
-  set closed(flippers) {
-    flippers.forEach(function(flipper) {
-      setTimeout(function closeFlipper() {
-        flipper.classList.add('closed');
-      }, 100);
-    });
+  get currentLevelParams() {
+    return this.levelsParams[this.level - 1];
   }
 
-  set hidden(flippers) {
-    flippers.forEach(function hideFlipper(flipper) {
-      flipper.classList.remove('opened');
+  open(card) {
+    card.classList.add('opened');
+  }
+
+  close(cards) {
+    if (this.clicksRemain === this.currentLevelParams.clicks - 2) { // means success with first couple of cards
+      this.getHeart();
+    }
+
+    setTimeout(function() {
+      cards.forEach(function(card) {
+        card.classList.add('closed');
+        card.classList.remove('opened');
+      });
+
+      this.checkVictory();
+    }.bind(this), 300);
+  }
+
+  hide(cards) {
+    cards.forEach(function(card) {
+      card.classList.remove('opened');
     })
   }
 
-  start(levelParams) {
-    this.fillArea(levelParams);
-    this.area.addEventListener('click', function(event) {
-      if (event.target.closest('.card')) {
-        this.handleCardClick(event.target.closest('.card'));
-      }
-    }.bind(this));
-  }
-
-  finish() {
-  }
-
-  fillArea(levelParams) {
-    let area = '';
-    const cardTypes = this.shuffleCardTypes(this.cardTypes, levelParams)
-
-    cardTypes.forEach(function createCard(cardType) {
-      area += ` <div class="card ${ cardType }">
-                  <div class="flipper">
-                    <div class="front"></div>
-                    <div class="back"></div>
-                  </div>
-                </div> `;
-    });
-
-    this.area.innerHTML = area;
-  }
-
-  handleCardClick(card) {
-    const flipperElement = card.querySelector('.flipper');
-    const cardType = this.findCardType(card);
-
-    if (!flipperElement.classList.contains('closed') && !flipperElement.classList.contains('opened')) {
-
-      this.clicksRemain--;
-
-      if (clicksRemain === 0) {
-      }
-
-      if (this.openedCards.openedFlippers.length === 2) {
-        this.hidden = this.openedCards.openedFlippers;
-      }
-
-      this.opened = flipperElement;
-      this.checkCardsEquality();
-    }
-  }
-
-  findCardType(card) {
-    return card.className.split(' ').find(function getType(name) {
-      return name !== 'card';
-    });
-  }
-
-  checkCardsEquality() {
-    const { openedFlippers, cardTypes } = this.openedCards;
-
-    if (openedFlippers.length === 2)  {
-      if (cardTypes[0] === cardTypes[1]) {
-        this.closed = openedFlippers;
-      }
-    }
-  }
-
-  shuffleCardTypes(cardTypes, levelParams) {
-    const { numberOfCards, numberOfCardTypes } = levelParams;
-    const randomTypes = shuffleArray(cardTypes).slice(0, numberOfCardTypes);
+  shuffleCardTypes() {
+    const { numberOfCardTypes } = this.currentLevelParams;
+    const randomTypes = shuffleArray(this.cardTypes).slice(0, numberOfCardTypes);
     let result = [];
 
-    for (let i = 1; i <= numberOfCards / numberOfCardTypes; i++) {
+    for (let i = 1; i <= this.numberOfCards / numberOfCardTypes; i++) {
       result = result.concat(randomTypes);
     }
 
     return shuffleArray(result);
   }
 
-}
+  handleClick(event) {
+    const card = event.target.closest('.card');
 
+    if (card && !this.isCardOpened(card)) {
+      if (this.openedCards.length === 2) {
+        this.hide(this.openedCards);
+      }
 
-class Player {
+      this.open(card);
 
-  constructor(container, game, levelParams) {
-    this.hearts = 1;
-    this.level = 1;
-    this.levelParams = levelParams;
+      if (this.openedCards.length === 2) {
+        this.compareOpenCards();
+      }
 
-    this.game = game;
-    game.start(this.levelParams);
-
-    this.clicksRemain = this.levelParams.clicks;
-
-    this.container = container;
+      this.hasClicked();
+    }
   }
 
-  getHeart() {
-
+  isCardOpened(card) {
+    return card.classList.contains('opened');
   }
 
-  updateLevel() {
-
+  compareOpenCards() {
+    if (this.openedCards[0].className === this.openedCards[1].className) {
+      this.close(this.openedCards);
+    }
   }
 
   hasClicked() {
     this.clicksRemain--;
-    this.update();
 
-    if (this.clicksRemain === 0) {
-      this.restart();
+    if (this.clicksRemain === 0 && this.closedCards.length !== this.numberOfCards - 2) {
+      return this.restart();
     }
+
+    document.querySelector('.clicks').textContent = this.clicksRemain;
   }
 
   restart() {
-    if (this.hearts > 0) {
-      Game.restart();
+    if (this.hearts === 0) {
+      this.level = 1;
+    } else {
+      this.hearts--;
+    }
+
+    this.start();
+  }
+
+  checkVictory() {
+    if (this.closedCards.length === this.numberOfCards) {
+      this.updateLevel();
     }
   }
 
-  update() {
-    this.container.innerHTML = `<span class="level">Level ${ this.level }</span>
-                                <img class="logo-img" src="images/logo.png">
-                                <span class="clicks">Clicks: ${ this.clicksRemain }</span> `;
+  updateLevel() {
+    if (this.level < 10) {
+      this.level++;
+      this.start();
+    } else {
+      // FINISH WHOLE GAME
+    }
   }
 
+  getHeart() {
+    this.hearts++;
+    document.querySelector('.hearts').textContent = this.hearts;
+  }
 }
 
-const game = new Game(gameAreaElement, CARD_TYPES);
+const LEVELS_PARAMS = [
+  {
+    clicks: 40,
+    numberOfCards: 16,
+    numberOfCardTypes: 2
+  },
+  {
+    clicks: 30,
+    numberOfCards: 16,
+    numberOfCardTypes: 2
+  },
+  {
+    clicks: 25,
+    numberOfCards: 16,
+    numberOfCardTypes: 2
+  },
+  {
+    clicks: 45,
+    numberOfCards: 16,
+    numberOfCardTypes: 4
+  },
+  {
+    clicks: 35,
+    numberOfCards: 16,
+    numberOfCardTypes: 4
+  },
+  {
+    clicks: 30,
+    numberOfCards: 16,
+    numberOfCardTypes: 4
+  },
+  {
+    clicks: 25,
+    numberOfCards: 16,
+    numberOfCardTypes: 4
+  },
+  {
+    clicks: 35,
+    numberOfCards: 16,
+    numberOfCardTypes: 8
+  },
+  {
+    clicks: 30,
+    numberOfCards: 16,
+    numberOfCardTypes: 8
+  },
+  {
+    clicks: 25,
+    numberOfCards: 16,
+    numberOfCardTypes: 8
+  }
+];
 
-const player = new Player(header, game, LEVEL_0);
-player.update();
+const game = new Game(rootElement, CARD_TYPES, LEVELS_PARAMS);
+game.start();

@@ -15,8 +15,8 @@ body {
   font-family: monospace;
   letter-spacing: 5px;
 
-	background: url(../images/logo.png) no-repeat center 20px / 200px,
-              url(../images/stars-bg.jpg) no-repeat center center / cover;
+	background: url(images/logo.png) no-repeat center 20px / 200px,
+              url(images/stars-bg.jpg) no-repeat center center / cover;
 }
 
 header {
@@ -33,7 +33,7 @@ header p {
 }
 
 .hearts::after {
-  content: url('../images/heart.png');
+  content: url('images/heart.png');
   position: absolute;
   left: 30px;
   top: 3px;
@@ -75,35 +75,35 @@ header p {
 }
 
 .jabba .back {
-  background: url('../images/jabba.png') no-repeat center center / cover, #fff;
+  background: url('images/jabba.png') no-repeat center center / cover, #fff;
 }
 
 .obi .back {
-  background: url('../images/obi.png') no-repeat center center / cover, #fff;
+  background: url('images/obi.png') no-repeat center center / cover, #fff;
 }
 
 .c3po .back {
-  background: url('../images/c3po.png') no-repeat center center / cover, #fff;
+  background: url('images/c3po.png') no-repeat center center / cover, #fff;
 }
 
 .chewbacca .back {
-  background: url('../images/chewbacca.png') no-repeat center center / cover, #fff;
+  background: url('images/chewbacca.png') no-repeat center center / cover, #fff;
 }
 
 .leia .back {
-  background: url('../images/leia.png') no-repeat center center / cover, #fff;
+  background: url('images/leia.png') no-repeat center center / cover, #fff;
 }
 
 .luke .back {
-  background: url('../images/luke.png') no-repeat center center / cover, #fff;
+  background: url('images/luke.png') no-repeat center center / cover, #fff;
 }
 
 .vader .back {
-  background: url('../images/vader.png') no-repeat center center / cover, #fff;
+  background: url('images/vader.png') no-repeat center center / cover, #fff;
 }
 
 .yoda .back {
-  background: url('../images/yoda.png') no-repeat center center / cover, #fff;
+  background: url('images/yoda.png') no-repeat center center / cover, #fff;
 }
 
 .closed {
