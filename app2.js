@@ -9,28 +9,21 @@ function shuffleArray(array) {
 }
 
 class Game {
-  static getInitialParams() {
-    return {
-      clicks: 48,
-      numberOfCards: 16,
-      numberOfCardTypes: 4
-    }
-  }
-
-  constructor(container, cardTypes) {
+  constructor(container, cardTypes, levelsParams) {
     this.container = container;
 
     this.level = 1;
     this.hearts = 0;
 
     this.cardTypes = cardTypes;
-    this.levelParams = Game.getInitialParams();
+    this.levelsParams = levelsParams;
+    this.numberOfCards = 16;
 
     this.container.addEventListener('click', this.handleClick.bind(this));
   }
 
   start() {
-    this.clicksRemain = this.levelParams.clicks;
+    this.clicksRemain = this.currentLevelParams.clicks;
 
     this.container.innerHTML = '';
     this.fillGameState();
@@ -72,14 +65,16 @@ class Game {
     return document.querySelectorAll('.closed');
   }
 
+  get currentLevelParams() {
+    return this.levelsParams[this.level - 1];
+  }
+
   open(card) {
     card.classList.add('opened');
-
-    this.hasClicked();
   }
 
   close(cards) {
-    if (this.clicksRemain === this.levelParams.clicks - 2) { // means success with first couple of cards
+    if (this.clicksRemain === this.currentLevelParams.clicks - 2) { // means success with first couple of cards
       this.getHeart();
     }
 
@@ -100,11 +95,11 @@ class Game {
   }
 
   shuffleCardTypes() {
-    const { numberOfCards, numberOfCardTypes } = this.levelParams;
+    const { numberOfCardTypes } = this.currentLevelParams;
     const randomTypes = shuffleArray(this.cardTypes).slice(0, numberOfCardTypes);
     let result = [];
 
-    for (let i = 1; i <= numberOfCards / numberOfCardTypes; i++) {
+    for (let i = 1; i <= this.numberOfCards / numberOfCardTypes; i++) {
       result = result.concat(randomTypes);
     }
 
@@ -120,10 +115,12 @@ class Game {
       }
 
       this.open(card);
-    }
 
-    if (this.openedCards.length === 2) {
-      this.compareOpenCards();
+      if (this.openedCards.length === 2) {
+        this.compareOpenCards();
+      }
+
+      this.hasClicked();
     }
   }
 
@@ -150,7 +147,6 @@ class Game {
   restart() {
     if (this.hearts === 0) {
       this.level = 1;
-      this.levelParams = Game.getInitialParams();
     } else {
       this.hearts--;
     }
@@ -159,7 +155,7 @@ class Game {
   }
 
   checkVictory() {
-    if (this.closedCards.length === this.levelParams.numberOfCards) {
+    if (this.closedCards.length === this.numberOfCards) {
       this.updateLevel();
     }
   }
@@ -167,12 +163,6 @@ class Game {
   updateLevel() {
     if (this.level < 10) {
       this.level++;
-      this.levelParams.clicks -= 4;
-
-      if (this.level === 5) {
-        this.levelParams.numberOfCardTypes = 8;
-      }
-
       this.start();
     } else {
       // FINISH WHOLE GAME
@@ -185,5 +175,58 @@ class Game {
   }
 }
 
-const game = new Game(rootElement, CARD_TYPES);
+const LEVELS_PARAMS = [
+  {
+    clicks: 40,
+    numberOfCards: 16,
+    numberOfCardTypes: 2
+  },
+  {
+    clicks: 30,
+    numberOfCards: 16,
+    numberOfCardTypes: 2
+  },
+  {
+    clicks: 25,
+    numberOfCards: 16,
+    numberOfCardTypes: 2
+  },
+  {
+    clicks: 45,
+    numberOfCards: 16,
+    numberOfCardTypes: 4
+  },
+  {
+    clicks: 35,
+    numberOfCards: 16,
+    numberOfCardTypes: 4
+  },
+  {
+    clicks: 30,
+    numberOfCards: 16,
+    numberOfCardTypes: 4
+  },
+  {
+    clicks: 25,
+    numberOfCards: 16,
+    numberOfCardTypes: 4
+  },
+  {
+    clicks: 35,
+    numberOfCards: 16,
+    numberOfCardTypes: 8
+  },
+  {
+    clicks: 30,
+    numberOfCards: 16,
+    numberOfCardTypes: 8
+  },
+  {
+    clicks: 25,
+    numberOfCards: 16,
+    numberOfCardTypes: 8
+  }
+];
+
+const game = new Game(rootElement, CARD_TYPES, LEVELS_PARAMS);
 game.start();

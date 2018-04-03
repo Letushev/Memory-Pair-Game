@@ -31,6 +31,7 @@ header p {
 .hearts {
   position: relative;
 }
+
 .hearts::after {
   content: url('../images/heart.png');
   position: absolute;
