@@ -137,7 +137,7 @@ class Game {
   hasClicked() {
     this.clicksRemain--;
 
-    if (this.clicksRemain === 0) {
+    if (this.clicksRemain === 0 && this.closedCards.length !== this.numberOfCards - 2) {
       return this.restart();
     }
 
