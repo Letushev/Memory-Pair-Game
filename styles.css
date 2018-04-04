@@ -9,12 +9,10 @@ html {
 body {
   min-height: 100%;
 	margin: 0;
-  overflow: unset;
 
   color: #fff;
   font-family: monospace;
   letter-spacing: 5px;
-  text-shadow: 0 0 20px black;
 
 	background: url(images/logo.png) no-repeat center 20px / 200px,
               url(images/stars-bg.jpg) no-repeat center center / cover;
@@ -25,8 +23,8 @@ header {
 }
 
 header p {
-   font-size: 1.3rem;
-   margin: 5px 0;
+  font-size: 1.3rem;
+  margin: 5px 0;
 }
 
 .hearts {
@@ -127,24 +125,27 @@ header p {
   transform: translate(-50%, -50%);
 
   text-align: center;
-  font-size: 1.5rem;
+  font-size: 1.3rem;
   background: black;
-  padding: 20px 30px 30px 30px;
+  padding: 0 25px 25px 25px;
   border: 2px solid #fff;
 }
 
-.msg button {
-  padding: 5px 10px;
-  background: none;
+.msg .level {
+  color: #ffe81f;
+}
 
-  color: #fff;
+.msg button {
+  padding: 5px 15px;
+  background: #ffe81f;
+  border: none;
+
+  color: black;
   text-transform: uppercase;
   font-weight: bold;
   font-family: monospace;
   letter-spacing: 5px;
   font-size: 1.1rem;
-
-  border: 3px solid yellow;
 
   cursor: pointer;
   outline: none;

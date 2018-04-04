@@ -31,23 +31,24 @@ class Game {
   }
 
   showMsg(msg) {
-    this.container.innerHTML = `<p class="msg">${ msg }</p>`;
+    this.container.innerHTML = '';
 
     const box = document.createElement('div');
     box.className = 'msg';
 
+    const message = document.createElement('p');
+    message.innerHTML = msg;
+
     const level = document.createElement('p');
+    level.className = 'level';
     level.textContent = `Level ${ this.level }`;
+
     const startButton = document.createElement('button');
     startButton.textContent = 'Start';
     startButton.addEventListener('click', this.start.bind(this));
 
-    box.append(level, startButton);
-
-    setTimeout(function() {
-      this.container.innerHTML = '';
-      this.container.appendChild(box);
-    }.bind(this), 2000);
+    box.append(message, level, startButton);
+    this.container.appendChild(box);
   }
 
   fillGameState() {
@@ -167,10 +168,10 @@ class Game {
   restart() {
     if (this.hearts === 0) {
       this.level = 1;
-      this.showMsg('Oops... You lose!')
+      this.showMsg('Oops... You lost! <br /> Try again :)')
     } else {
       this.hearts--;
-      this.showMsg('You lose 1 heart <br /> Try this level again!');
+      this.showMsg('A heart gives you a chance!');
     }
   }
 
@@ -183,9 +184,9 @@ class Game {
   updateLevel() {
     if (this.level < 10) {
       this.level++;
-      this.showMsg('Great job! <br /> Go to the next level');
+      this.showMsg('<p>Good job! <br /> Move on!</p> ');
     } else {
-      this.showMsg('Congratulations! <br /> You win!')
+      this.showMsg('<p>Congratulations! <br /> You are the winner!</p>')
     }
   }
 
@@ -249,4 +250,4 @@ const LEVELS_PARAMS = [
 ];
 
 const game = new Game(rootElement, CARD_TYPES, LEVELS_PARAMS);
-game.showMsg('Welcome to Star Wars <br /> Memory Pair Game!');
+game.showMsg('<p>Memory Pair Game</p>');
