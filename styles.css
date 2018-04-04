@@ -167,3 +167,14 @@ header p {
   transform: translate(-50%, -50%);
   opacity: 0;
 }
+
+@media screen and (max-width: 700px) {
+  body {
+    background: url(images/logo.png) no-repeat 90% 30px / 150px,
+                url(images/stars-bg.jpg) no-repeat center center / cover;
+  }
+
+  header {
+    padding-left: 20px;
+  }
+}
