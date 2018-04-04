@@ -30,6 +30,26 @@ class Game {
     this.fillGameArea();
   }
 
+  showMsg(msg) {
+    this.container.innerHTML = `<p class="msg">${ msg }</p>`;
+
+    const box = document.createElement('div');
+    box.className = 'msg';
+
+    const level = document.createElement('p');
+    level.textContent = `Level ${ this.level }`;
+    const startButton = document.createElement('button');
+    startButton.textContent = 'Start';
+    startButton.addEventListener('click', this.start.bind(this));
+
+    box.append(level, startButton);
+
+    setTimeout(function() {
+      this.container.innerHTML = '';
+      this.container.appendChild(box);
+    }.bind(this), 2000);
+  }
+
   fillGameState() {
     const header = document.createElement('header');
     header.innerHTML = `
@@ -74,6 +94,7 @@ class Game {
   }
 
   close(cards) {
+    console.log(this.clicksRemain, this.currentLevelParams.clicks);
     if (this.clicksRemain === this.currentLevelParams.clicks - 2) { // means success with first couple of cards
       this.getHeart();
     }
@@ -115,12 +136,11 @@ class Game {
       }
 
       this.open(card);
+      this.hasClicked();
 
       if (this.openedCards.length === 2) {
         this.compareOpenCards();
       }
-
-      this.hasClicked();
     }
   }
 
@@ -147,11 +167,11 @@ class Game {
   restart() {
     if (this.hearts === 0) {
       this.level = 1;
+      this.showMsg('Oops... You lose!')
     } else {
       this.hearts--;
+      this.showMsg('You lose 1 heart <br /> Try this level again!');
     }
-
-    this.start();
   }
 
   checkVictory() {
@@ -163,9 +183,9 @@ class Game {
   updateLevel() {
     if (this.level < 10) {
       this.level++;
-      this.start();
+      this.showMsg('Great job! <br /> Go to the next level');
     } else {
-      // FINISH WHOLE GAME
+      this.showMsg('Congratulations! <br /> You win!')
     }
   }
 
@@ -229,4 +249,4 @@ const LEVELS_PARAMS = [
 ];
 
 const game = new Game(rootElement, CARD_TYPES, LEVELS_PARAMS);
-game.start();
+game.showMsg('Welcome to Star Wars <br /> Memory Pair Game!');
