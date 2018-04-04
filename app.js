@@ -186,6 +186,8 @@ class Game {
       this.level++;
       this.showMsg('<p>Good job! <br /> Move on</p> ');
     } else {
+      this.level = 1;
+      this.hearts = 0;
       this.showMsg('<p>Congratulations! <br /> You are the winner!</p>')
     }
   }
