@@ -136,7 +136,7 @@ header p {
 }
 
 @keyframes fadeIn {
-  0% {opacity: 0;}
+  0%   {opacity: 0;}
   100% {opacity: 1;}
 }
 
@@ -158,4 +158,12 @@ header p {
 
   cursor: pointer;
   outline: none;
+}
+
+.big-heart {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  opacity: 0;
 }

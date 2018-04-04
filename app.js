@@ -193,6 +193,15 @@ class Game {
   getHeart() {
     this.hearts++;
     document.querySelector('.hearts').textContent = this.hearts;
+
+    const heart = document.createElement('img');
+    heart.className = 'big-heart fadeIn';
+    heart.setAttribute('src', 'images/bigHeart.png');
+    this.container.appendChild(heart);
+
+    setTimeout(function() {
+      this.container.removeChild(heart);
+    }.bind(this), 1000);
   }
 }
 
