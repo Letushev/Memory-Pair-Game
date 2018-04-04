@@ -95,7 +95,6 @@ class Game {
   }
 
   close(cards) {
-    console.log(this.clicksRemain, this.currentLevelParams.clicks);
     if (this.clicksRemain === this.currentLevelParams.clicks - 2) { // means success with first couple of cards
       this.getHeart();
     }
