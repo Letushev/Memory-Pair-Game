@@ -131,6 +131,15 @@ header p {
   border: 2px solid #fff;
 }
 
+.fadeIn {
+  animation: fadeIn .4s;
+}
+
+@keyframes fadeIn {
+  0% {opacity: 0;}
+  100% {opacity: 1;}
+}
+
 .msg .level {
   color: #ffe81f;
 }

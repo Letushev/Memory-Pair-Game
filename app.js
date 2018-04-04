@@ -34,7 +34,7 @@ class Game {
     this.container.innerHTML = '';
 
     const box = document.createElement('div');
-    box.className = 'msg';
+    box.className = 'msg fadeIn';
 
     const message = document.createElement('p');
     message.innerHTML = msg;
@@ -63,7 +63,7 @@ class Game {
 
   fillGameArea() {
     const gameArea = document.createElement('div');
-    gameArea.className = 'game-area';
+    gameArea.className = 'game-area fadeIn';
 
     const cards = this.shuffleCardTypes();
 
@@ -184,7 +184,7 @@ class Game {
   updateLevel() {
     if (this.level < 10) {
       this.level++;
-      this.showMsg('<p>Good job! <br /> Move on!</p> ');
+      this.showMsg('<p>Good job! <br /> Move on</p> ');
     } else {
       this.showMsg('<p>Congratulations! <br /> You are the winner!</p>')
     }
