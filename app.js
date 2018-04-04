@@ -207,17 +207,17 @@ const LEVELS_PARAMS = [
     numberOfCardTypes: 2
   },
   {
-    clicks: 25,
+    clicks: 24,
     numberOfCards: 16,
     numberOfCardTypes: 2
   },
   {
-    clicks: 45,
+    clicks: 42,
     numberOfCards: 16,
     numberOfCardTypes: 4
   },
   {
-    clicks: 35,
+    clicks: 36,
     numberOfCards: 16,
     numberOfCardTypes: 4
   },
@@ -227,12 +227,12 @@ const LEVELS_PARAMS = [
     numberOfCardTypes: 4
   },
   {
-    clicks: 25,
+    clicks: 24,
     numberOfCards: 16,
     numberOfCardTypes: 4
   },
   {
-    clicks: 35,
+    clicks: 36,
     numberOfCards: 16,
     numberOfCardTypes: 8
   },
@@ -242,7 +242,7 @@ const LEVELS_PARAMS = [
     numberOfCardTypes: 8
   },
   {
-    clicks: 25,
+    clicks: 24,
     numberOfCards: 16,
     numberOfCardTypes: 8
   }
